@@ -2,82 +2,126 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>心靈處境雙階抽籤系統</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>周謙和 Ｘ 謝佳杰 | 每週聖經分享抽籤系統</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
+        /* 鎖定全螢幕，禁止捲動 */
+        html, body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden; /* 徹底隱藏網頁捲軸 */
+            background-color: #f4f6f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        /* 完美置中容器 */
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 15px;
         }
         .container {
-            max-width: 900px;
+            max-width: 850px;
             width: 100%;
+            max-height: 98vh; /* 稍微微調高度容納測試框 */
             background-color: #ffffff;
-            padding: 30px;
+            padding: 20px 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             text-align: center;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
+        
+        /* 測試輸入框區域 */
+        .test-admin-box {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .test-input {
+            padding: 4px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 12px;
+            width: 80px;
+            text-align: center;
+        }
+        .test-confirm-btn {
+            padding: 4px 12px;
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .test-confirm-btn:hover {
+            background-color: #2d3748;
+        }
+
         h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 26px;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 24px;
+            line-height: 1.3;
         }
         p.subtitle {
             color: #7f8c8d;
-            margin-bottom: 30px;
-            font-size: 14px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
         }
         /* 雙區塊排版 */
         .zones-container {
             display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: nowrap; /* 強制不換行，避免在小螢幕撐開導致需要捲動 */
         }
         .zone {
             flex: 1;
-            min-width: 280px;
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 10px;
-            padding: 20px;
+            padding: 15px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
         .zone-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             color: #7f8c8d;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
             border-bottom: 2px solid #edf2f7;
         }
         .draw-box {
             background-color: #f8f9fa;
             border: 2px dashed #bdc3c7;
             border-radius: 8px;
-            padding: 30px 15px;
-            margin-bottom: 20px;
-            min-height: 140px;
+            padding: 20px 10px;
+            margin-bottom: 15px;
+            min-height: 120px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
         .draw-box.active {
-            border-color: #3498db;
-            background-color: #ebf5fb;
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
         }
         .draw-box.locked {
             background-color: #edf2f7;
@@ -85,21 +129,21 @@
             color: #a0aec0;
         }
         .result-main {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #2c3e50;
-            line-height: 1.5;
-        }
-        .result-detail {
-            font-size: 14px;
-            color: #4a5568;
-            margin-top: 8px;
             line-height: 1.4;
         }
-        .result-example {
+        .result-detail {
             font-size: 13px;
+            color: #4a5568;
+            margin-top: 6px;
+            line-height: 1.3;
+        }
+        .result-example {
+            font-size: 12px;
             color: #e67e22;
-            margin-top: 10px;
+            margin-top: 8px;
             font-style: italic;
         }
         /* 按鈕樣式 */
@@ -107,19 +151,24 @@
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 15px;
+            padding: 10px 20px;
+            font-size: 14px;
             border-radius: 25px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
             transition: all 0.2s;
             width: 100%;
+            box-sizing: border-box;
         }
         .btn:hover {
             background-color: #2980b9;
         }
-        .btn:active {
-            transform: scale(0.98);
+        .btn.rolling {
+            background-color: #e74c3c;
+            box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2);
+        }
+        .btn.rolling:hover {
+            background-color: #c0392b;
         }
         .btn:disabled {
             background-color: #cbd5e0;
@@ -127,30 +176,108 @@
             cursor: not-allowed;
             box-shadow: none;
         }
-        /* 醒目提示大主題顏色 */
         #theme-box .result-main {
             color: #2b6cb0;
-            font-size: 20px;
+            font-size: 18px;
+        }
+
+        /* 測試功能主按鈕 */
+        .btn-test-control {
+            margin-top: 10px;
+            background-color: #cbd5e0; /* 預設變暗、灰色 */
+            color: #718096;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-test-control.unlocked-green {
+            background-color: #2ecc71;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+        }
+        .btn-test-control.unlocked-green:hover {
+            background-color: #27ae60;
+        }
+        .btn-test-control.testing-red {
+            background-color: #e74c3c;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2);
+        }
+        .btn-test-control.testing-red:hover {
+            background-color: #c0392b;
+        }
+
+        /* 底部總結輸出區塊 */
+        .summary-box {
+            background-color: #fcf8e3;
+            border: 1px solid #fbeed5;
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: #c09853;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.5;
+            text-align: center;
+        }
+        #summary-detail {
+            color: #b94a48;
+            font-size: 15px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* 鎖定提示樣式 */
+        .lock-notice {
+            color: #e74c3c !important;
+            font-weight: bold;
+        }
+
+        /* 針對小螢幕進行微調，確保絕對不溢出 */
+        @media (max-width: 600px) {
+            .test-admin-box { margin-bottom: 5px; }
+            .zones-container {
+                flex-direction: column; /* 手機版改垂直，但縮小間距防止溢出 */
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+            .zone {
+                padding: 8px;
+            }
+            .draw-box {
+                padding: 8px 5px;
+                min-height: 80px;
+                margin-bottom: 8px;
+            }
+            h1 { font-size: 18px; }
+            .result-main { font-size: 13px; }
+            #theme-box .result-main { font-size: 15px; }
+            .summary-box { font-size: 11px; padding: 6px; }
+            #summary-detail { font-size: 12px; }
+            .btn-test-control { margin-top: 5px; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>心靈處境雙階抽籤系統</h1>
-    <p class="subtitle">請依序操作：先抽取「大主題」，再依據主題抽取對應的「細項」</p>
+    <div class="test-admin-box">
+        <input type="password" id="test-code-input" class="test-input" placeholder="系統密碼">
+        <button class="test-confirm-btn" onclick="verifyTestCode()">確認</button>
+    </div>
+
+    <h1>周謙和 Ｘ 謝佳杰<br>每週聖經分享抽籤系統</h1>
+    <p class="subtitle" id="system-subtitle">請依序操作：點擊按鈕開始滾動，再次點擊按鈕停止並鎖定結果</p>
     
     <div class="zones-container">
-        <!-- 第一階段：大主題 -->
         <div class="zone">
             <div class="zone-title">第一步：抽取大主題</div>
             <div class="draw-box" id="theme-box">
                 <div class="result-main" id="theme-result">請點擊下方按鈕</div>
             </div>
-            <button class="btn" id="btn-theme" onclick="drawTheme()">抽取大主題</button>
+            <button class="btn" id="btn-theme" onclick="toggleTheme()">開始抽取大主題</button>
         </div>
         
-        <!-- 第二階段：細項 -->
         <div class="zone">
             <div class="zone-title">第二步：抽取細項</div>
             <div class="draw-box locked" id="detail-box">
@@ -158,13 +285,19 @@
                 <div class="result-detail" id="detail-sub"></div>
                 <div class="result-example" id="detail-example"></div>
             </div>
-            <button class="btn" id="btn-detail" onclick="drawDetail()" disabled>抽取對應細項</button>
+            <button class="btn" id="btn-detail" onclick="toggleDetail()" disabled>開始抽取細項</button>
         </div>
     </div>
+
+    <div class="summary-box">
+        本週（<span id="date-start">----/--/--</span> ～ <span id="date-end">----/--/--</span>）查經分享主題為：<br>
+        <span id="summary-detail">（尚未抽出細項）</span>
+    </div>
+
+    <button class="btn btn-test-control" id="btn-test-mode" onclick="toggleTestDrawingMode()" disabled>開始測試</button>
 </div>
 
 <script>
-    // 依據結構完整分類的資料庫
     const dataStructure = {
         "一、 內心情感與心境（情緒篇）": [
             { name: "「悲傷、哀慟與沮喪」類", detail: "面對失去、悲劇或莫名的情緒低落。", example: "例：詩篇 42 篇「我的心哪，你為何憂悶？」" },
@@ -190,96 +323,291 @@
         "四、 信仰生命增長（生命篇）": [
             { name: "「信心與盼望」類", detail: "當信仰動搖、遭遇懷疑，需要重新建立對神的信任。", example: "" },
             { name: "「誘惑與試探」類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
-            { name: "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
+            { name: " "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
             { name: "「生命的呼召與使命」類", detail: "尋找人生的意義、活出受造的價值。", example: "" },
             { name: "「謙卑與捨己」類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
         ]
     };
 
-    // 取得所有大主題名稱陣列
     const themes = Object.keys(dataStructure);
-    let selectedTheme = ""; // 紀錄目前抽到的大主題
+    let selectedTheme = ""; 
+    
+    let themeInterval = null;
+    let detailInterval = null;
 
-    // 階段一：抽大主題
-    function drawTheme() {
+    let currentThemeIndex = 0;
+    let currentDetailIndex = 0;
+    
+    let isSystemLocked = false; 
+    let isTestModeUnlocked = false; // 是否輸入 0126 解鎖按鈕
+    let isCurrentlyTesting = false; // 是否按下開始測試進入無限抽
+
+    window.onload = function() {
+        initDates();
+        checkLockStatus();
+    };
+
+    function initDates() {
+        const now = new Date();
+        const cutoffTime = getCutoffWednesday550(now);
+        const startDate = new Date(cutoffTime.getTime());
+        startDate.setDate(startDate.getDate() + 1);
+        const endDate = new Date(startDate.getTime());
+        endDate.setDate(endDate.getDate() + 6);
+
+        document.getElementById('date-start').innerText = formatDate(startDate);
+        document.getElementById('date-end').innerText = formatDate(endDate);
+    }
+
+    function getCutoffWednesday550(date) {
+        const d = new Date(date.getTime());
+        const day = d.getDay();
+        let diff = day - 3;
+        d.setDate(d.getDate() - diff);
+        d.setHours(17, 50, 0, 0);
+        if (d > date) { d.setDate(d.getDate() - 7); }
+        return d;
+    }
+
+    function formatDate(date) {
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `${yyyy}/${mm}/${dd}`;
+    }
+
+    function checkLockStatus() {
+        if (isCurrentlyTesting) return; 
+
+        const now = new Date();
+        const currentPeriodCutoff = getCutoffWednesday550(now);
+        const lastDrawTimeStr = localStorage.getItem('last_bible_draw_time');
+        
+        if (lastDrawTimeStr) {
+            const lastDrawTime = new Date(parseInt(lastDrawTimeStr, 10));
+            if (lastDrawTime >= currentPeriodCutoff) {
+                lockSystem("本週已完成抽籤，下週三 17:50 後將自動解鎖。");
+                const savedSummary = localStorage.getItem('last_bible_draw_summary');
+                if (savedSummary) {
+                    document.getElementById('summary-detail').innerText = savedSummary;
+                }
+                return;
+            }
+        }
+        
+        // 恢復正常狀態
+        isSystemLocked = false;
+        document.getElementById('btn-theme').disabled = false;
+        document.getElementById('btn-detail').disabled = true; // 預備狀態下細項預設停用，除非抽了大主題
+        document.getElementById('detail-box').classList.add('locked');
+        
+        const subtitle = document.getElementById('system-subtitle');
+        subtitle.innerText = "請依序操作：點擊按鈕開始滾動，再次點擊按鈕停止並鎖定結果";
+        subtitle.classList.remove('lock-notice');
+    }
+
+    function lockSystem(message) {
+        isSystemLocked = true;
+        document.getElementById('btn-theme').disabled = true;
+        document.getElementById('btn-detail').disabled = true;
+        
+        const subtitle = document.getElementById('system-subtitle');
+        subtitle.innerText = message;
+        subtitle.classList.add('lock-notice');
+    }
+
+    /* ================= 統一密碼切換與無限抽測試機制 ================= */
+    function verifyTestCode() {
+        const inputVal = document.getElementById('test-code-input').value.trim();
+        const testBtn = document.getElementById('btn-test-mode');
+
+        if (inputVal === "0126") {
+            if (!isTestModeUnlocked) {
+                // 【密碼正確：解鎖按鈕（變綠）】
+                isTestModeUnlocked = true;
+                testBtn.disabled = false;
+                testBtn.innerText = "開始測試";
+                testBtn.className = "btn btn-test-control unlocked-green";
+            } else {
+                // 【再次輸入密碼：完全鎖定測試（還原灰色變暗）】
+                isTestModeUnlocked = false;
+                isCurrentlyTesting = false;
+                
+                testBtn.disabled = true;
+                testBtn.innerText = "開始測試";
+                testBtn.className = "btn btn-test-control"; 
+                
+                // 回歸常規每週一次的時間鎖定檢查
+                checkLockStatus();
+            }
+        }
+        document.getElementById('test-code-input').value = ""; // 清空
+    }
+
+    function toggleTestDrawingMode() {
+        if (!isTestModeUnlocked) return;
+
+        const testBtn = document.getElementById('btn-test-mode');
+        const subtitle = document.getElementById('system-subtitle');
+        const btnTheme = document.getElementById('btn-theme');
+        const btnDetail = document.getElementById('btn-detail');
+        const detailBox = document.getElementById('detail-box');
+
+        if (!isCurrentlyTesting) {
+            // 【點下開始測試：按鈕變紅「停止測試」，開啟無限案權限】
+            isCurrentlyTesting = true;
+            
+            testBtn.innerText = "停止測試";
+            testBtn.className = "btn btn-test-control testing-red";
+            
+            // 測試模式下強制解鎖這兩個抽籤按鈕，使其可自由無限按
+            isSystemLocked = false; 
+            btnTheme.disabled = false;
+            btnDetail.disabled = false;
+            detailBox.classList.remove('locked');
+            if (detailResult.innerText === "請先完成第一步") {
+                detailResult.innerText = "請點擊下方按鈕";
+            }
+
+            subtitle.innerText = "【測試模式運行中】已解除每週時間限制，兩步驟抽籤按鈕皆可无限點選測試。";
+            subtitle.classList.remove('lock-notice');
+        } else {
+            // 【點下停止測試：按鈕變回綠色「開始測試」】
+            isCurrentlyTesting = false;
+            
+            testBtn.innerText = "開始測試";
+            testBtn.className = "btn btn-test-control unlocked-green";
+            
+            // 回歸正式系統的週期鎖定判定
+            checkLockStatus();
+        }
+    }
+    /* ============================================================ */
+
+    function toggleTheme() {
+        if (isSystemLocked && !isCurrentlyTesting) return;
+
+        const btnTheme = document.getElementById('btn-theme');
         const themeBox = document.getElementById('theme-box');
         const themeResult = document.getElementById('theme-result');
+        
         const detailBox = document.getElementById('detail-box');
         const detailResult = document.getElementById('detail-result');
         const detailSub = document.getElementById('detail-sub');
         const detailExample = document.getElementById('detail-example');
         const btnDetail = document.getElementById('btn-detail');
 
-        // 初始化/重置第二步狀態
-        detailBox.classList.add('locked');
-        btnDetail.disabled = true;
-        detailResult.innerText = "等待大主題決定...";
-        detailSub.innerText = "";
-        detailExample.innerText = "";
-
-        themeBox.classList.add('active');
-
-        let count = 0;
-        const interval = setInterval(() => {
-            const tempIndex = Math.floor(Math.random() * themes.length);
-            themeResult.innerText = themes[tempIndex];
-            count++;
-
-            if (count > 8) {
-                clearInterval(interval);
-                // 決定最終大主題
-                const finalIndex = Math.floor(Math.random() * themes.length);
-                selectedTheme = themes[finalIndex];
-                themeResult.innerText = selectedTheme;
-                themeBox.classList.remove('active');
-
-                // 解鎖第二階段
-                detailBox.classList.remove('locked');
-                detailResult.innerText = "請點擊按鈕抽取細項";
-                btnDetail.disabled = false;
+        if (themeInterval === null) {
+            // 開始滾動大主題
+            if (!isCurrentlyTesting) {
+                detailBox.classList.add('locked');
+                btnDetail.disabled = true;
+                detailResult.innerText = "等待大主題決定...";
+                detailSub.innerText = "";
+                detailExample.innerText = "";
+                document.getElementById('summary-detail').innerText = "（尚未抽出細項）";
             }
-        }, 80);
+
+            themeBox.classList.add('active');
+            btnTheme.innerText = "停止並決定大主題";
+            btnTheme.classList.add('rolling');
+
+            themeInterval = setInterval(() => {
+                currentThemeIndex = Math.floor(Math.random() * themes.length);
+                themeResult.innerText = themes[currentThemeIndex];
+            }, 50);
+        } else {
+            // 停止大主題
+            clearInterval(themeInterval);
+            themeInterval = null;
+
+            selectedTheme = themes[currentThemeIndex];
+            themeResult.innerText = selectedTheme;
+            
+            themeBox.classList.remove('active');
+            btnTheme.innerText = "重新抽取大主題";
+            btnTheme.classList.remove('rolling');
+
+            // 解鎖第二步
+            detailBox.classList.remove('locked');
+            if (detailResult.innerText === "請先完成第一步" || detailResult.innerText === "等待大主題決定...") {
+                detailResult.innerText = "請點擊下方按鈕";
+            }
+            btnDetail.disabled = false;
+        }
     }
 
-    // 階段二：抽對應細項
-    function drawDetail() {
-        if (!selectedTheme) return;
+    function toggleDetail() {
+        // 如果還沒有選定大主題，且非測試模式，則不執行
+        if (!selectedTheme && !isCurrentlyTesting) return;
+        if (isSystemLocked && !isCurrentlyTesting) return;
 
+        // 測試模式下的安全防呆：若還沒抽過大主題就硬按，自動隨機給一個大主題對應
+        if (!selectedTheme && isCurrentlyTesting) {
+            selectedTheme = themes[Math.floor(Math.random() * themes.length)];
+            document.getElementById('theme-result').innerText = selectedTheme;
+        }
+
+        const btnDetail = document.getElementById('btn-detail');
         const detailBox = document.getElementById('detail-box');
         const detailResult = document.getElementById('detail-result');
         const detailSub = document.getElementById('detail-sub');
         const detailExample = document.getElementById('detail-example');
         
-        // 取得該大主題底下的所有細項陣列
         const subList = dataStructure[selectedTheme];
-        
-        detailBox.classList.add('active');
 
-        let count = 0;
-        const interval = setInterval(() => {
-            const tempIndex = Math.floor(Math.random() * subList.length);
-            detailResult.innerText = subList[tempIndex].name;
-            detailSub.innerText = subList[tempIndex].detail;
-            count++;
+        if (detailInterval === null) {
+            // 開始滾動細項
+            detailBox.classList.add('active');
+            btnDetail.innerText = "停止並決定細項";
+            btnDetail.classList.add('rolling');
 
-            if (count > 10) {
-                clearInterval(interval);
-                // 決定最終細項
-                const finalIndex = Math.floor(Math.random() * subList.length);
-                const finalChoice = subList[finalIndex];
+            if (!isCurrentlyTesting) {
+                document.getElementById('btn-theme').disabled = true;
+            }
 
-                detailResult.innerText = finalChoice.name;
-                detailSub.innerText = finalChoice.detail;
-
-                if (finalChoice.example) {
-                    detailExample.innerText = finalChoice.example;
+            detailInterval = setInterval(() => {
+                currentDetailIndex = Math.floor(Math.random() * subList.length);
+                detailResult.innerText = subList[currentDetailIndex].name;
+                detailSub.innerText = subList[currentDetailIndex].detail;
+                if (subList[currentDetailIndex].example) {
+                    detailExample.innerText = subList[currentDetailIndex].example;
                 } else {
                     detailExample.innerText = "";
                 }
+            }, 50);
+        } else {
+            // 停止細項
+            clearInterval(detailInterval);
+            detailInterval = null;
 
-                detailBox.classList.remove('active');
+            const finalChoice = subList[currentDetailIndex];
+            detailResult.innerText = finalChoice.name;
+            detailSub.innerText = finalChoice.detail;
+            if (finalChoice.example) {
+                detailExample.innerText = finalChoice.example;
+            } else {
+                detailExample.innerText = "";
             }
-        }, 60);
+
+            const summaryText = `${finalChoice.name} — ${finalChoice.detail}`;
+            document.getElementById('summary-detail').innerText = summaryText;
+
+            detailBox.classList.remove('active');
+            btnDetail.innerText = "重新抽取細項";
+            btnDetail.classList.remove('rolling');
+
+            if (isCurrentlyTesting) {
+                // 【測試模式下】：允許兩邊按鈕都無限按，大主題按鈕不予鎖死
+                document.getElementById('btn-theme').disabled = false;
+            } else {
+                // 【正式運行下】：寫入 localStorage 鎖死本週權限
+                const now = new Date();
+                localStorage.setItem('last_bible_draw_time', now.getTime().toString());
+                localStorage.setItem('last_bible_draw_summary', summaryText);
+                lockSystem("抽籤完成！結果已成功鎖定。下週三 17:50 後將自動解鎖。");
+            }
+        }
     }
 </script>
 
