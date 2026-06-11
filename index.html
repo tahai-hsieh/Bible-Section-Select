@@ -129,14 +129,14 @@
             line-height: 1.4;
         }
         
-        /* 【修改：方框處】細項描述區域優化自動換行與排版 */
+        /* 細項描述區域優化自動換行與排版 */
         .result-detail {
             font-size: 13px;
             color: #4a5568;
             margin-top: 8px;
             line-height: 1.4;
             word-break: break-all;      /* 確保英數字或特殊符號也能正確換行 */
-            white-space: normal;        /* 開啟標準自動換行 */
+            white-space: pre-wrap;      /* 支援引號換行 \n 的保留與自動換行（較建議此版本） */
             display: block;             /* 確保占滿區塊進行換行 */
             padding: 0 5px;
         }
@@ -213,6 +213,7 @@
             font-weight: bold;
             line-height: 1.5;
             text-align: center;
+            white-space: pre-wrap; /* 確保底部總結區塊也同步支援手動換行 \n */
         }
         #summary-detail {
             color: #b94a48;
@@ -299,17 +300,18 @@
 </div>
 
 <script>
+    /* 【修改：照指定內容換行】在需要斷行的地方精確補上 \n 換行符號 */
     const dataStructure = {
         "一、 內心情感與心境（情緒篇）": [
-            { name: "「悲傷、哀慟與沮喪」類", detail: "面對失去、悲劇或莫名的情緒低落。", example: "例：詩篇 42 篇「我的心哪，你為何憂悶？」" },
-            { name: "「焦慮、擔憂與恐懼」類", detail: "對未來未知感到不安、面臨巨大壓力。", example: "例：馬太福音 6 章「不要為明天憂慮」" },
+            { name: "「悲傷、哀慟與沮喪」類", detail: "面對失去、悲劇或莫名的情緒低落。\n（例：詩篇 42 篇「我的心哪，你為何憂悶？」）", example: "" },
+            { name: "「焦慮、擔憂與恐懼」類", detail: "對未來未知感到不安、面臨巨大壓力。\n（例：馬太福音 6 章「不要為明天憂慮」）", example: "" },
             { name: "「孤獨、被遺棄與無助」類", detail: "覺得沒有人理解自己、身處孤立無援的境地。", example: "" },
             { name: "「憤怒、不平與埋怨」類", detail: "面對不公義、心中充滿怒火或對環境感到憤恨。", example: "" },
-            { name: "「愧疚、認罪與羞恥」類", detail: "為自己的過錯感到自責，需要尋求原諒與良心的平安。", example: "例：詩篇 51 篇大衛的懺悔" },
-            { name: "「感恩、喜樂與讚美」類", detail: "心中充滿謝意、經歷順境或歡慶時刻。", example: "例：詩篇 100 篇稱謝詩" }
+            { name: "「愧疚、認罪與羞恥」類", detail: "為自己的過錯感到自責，\n需要尋求原諒與良心的平安。（例：詩篇 51 篇大衛的懺悔）", example: "" },
+            { name: "「感恩、喜樂與讚美」類", detail: "心中充滿謝意、經歷順境或歡慶時刻。\n（例：詩篇 100 篇稱謝詩）", example: "" }
         ],
         "二、 生活困境與風浪（處境篇）": [
-            { name: "「苦難、疾病與身體軟弱」類", detail: "身體遭受病痛折磨，或生命經歷長期、無法解釋的苦難。", example: "例：約伯記" },
+            { name: "「苦難、疾病與身體軟弱」類", detail: "身體遭受病痛折磨，\n或生命經歷長期、無法解釋的苦難。（例：約伯記）", example: "" },
             { name: "「財務危機與物質缺乏」類", detail: "面臨經濟壓力、失業、缺乏生活必需品。", example: "" },
             { name: "「面臨抉擇與尋求智慧（迷茫）」類", detail: "人生走到十字路口，不知道該如何做決定。", example: "" },
             { name: "「疲憊、枯乾與尋求安息」類", detail: "身心俱疲、工作倦怠，需要重新得力。", example: "" },
@@ -319,7 +321,7 @@
             { name: "「愛、饒恕與仇敵」類", detail: "如何去愛難以愛的人、學習放下恨意與原諒傷害。", example: "" },
             { name: "「家庭、婚姻與育兒」類", detail: "夫妻相處、孝敬父母、教養孩童的處境。", example: "" },
             { name: "「友誼與同儕關係」類", detail: "尋找真誠的朋友、處理朋友間的衝突與背叛。", example: "" },
-            { name: "「領導、工作與職場倫理」類", detail: "身為管理者、領導者或部屬，如何在工作中展現智慧與誠信。", example: "" }
+            { name: "「領導、工作與職場倫理」類", detail: "身為管理者、領導者或部屬，\n如何在工作中展現智慧與誠信。", example: "" }
         ],
         "四、 信仰生命增長（生命篇）": [
             { name: "「信心與盼望」類", detail: "當信仰動搖、遭遇懷疑，需要重新建立對神的信任。", example: "" },
@@ -359,6 +361,7 @@
         document.getElementById('date-end').innerText = formatDate(endDate);
     }
 
+    // 獲取當前時間所屬週期的「基準分水嶺週三 17:50」
     function getCutoffWednesday550(date) {
         const d = new Date(date.getTime());
         const day = d.getDay();
@@ -578,7 +581,6 @@
                 detailExample.innerText = "";
             }
 
-            /* 【修改：圓圈處】將原本的破折號串接，統一調整為「冒號（：）」作區隔 */
             const summaryText = `${finalChoice.name}：${finalChoice.detail}`;
             document.getElementById('summary-detail').innerText = summaryText;
 
