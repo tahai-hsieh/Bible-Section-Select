@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心靈處境雙階抽籤系統</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 26px;
+        }
+        p.subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        /* 雙區塊排版 */
+        .zones-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .zone {
+            flex: 1;
+            min-width: 280px;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .zone-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #edf2f7;
+        }
+        .draw-box {
+            background-color: #f8f9fa;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 30px 15px;
+            margin-bottom: 20px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .draw-box.active {
+            border-color: #3498db;
+            background-color: #ebf5fb;
+        }
+        .draw-box.locked {
+            background-color: #edf2f7;
+            border-color: #cbd5e0;
+            color: #a0aec0;
+        }
+        .result-main {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        .result-detail {
+            font-size: 14px;
+            color: #4a5568;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        .result-example {
+            font-size: 13px;
+            color: #e67e22;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        /* 按鈕樣式 */
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn:disabled {
+            background-color: #cbd5e0;
+            color: #718096;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        /* 醒目提示大主題顏色 */
+        #theme-box .result-main {
+            color: #2b6cb0;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>心靈處境雙階抽籤系統</h1>
+    <p class="subtitle">請依序操作：先抽取「大主題」，再依據主題抽取對應的「細項」</p>
+    
+    <div class="zones-container">
+        <!-- 第一階段：大主題 -->
+        <div class="zone">
+            <div class="zone-title">第一步：抽取大主題</div>
+            <div class="draw-box" id="theme-box">
+                <div class="result-main" id="theme-result">請點擊下方按鈕</div>
+            </div>
+            <button class="btn" id="btn-theme" onclick="drawTheme()">抽取大主題</button>
+        </div>
+        
+        <!-- 第二階段：細項 -->
+        <div class="zone">
+            <div class="zone-title">第二步：抽取細項</div>
+            <div class="draw-box locked" id="detail-box">
+                <div class="result-main" id="detail-result">請先完成第一步</div>
+                <div class="result-detail" id="detail-sub"></div>
+                <div class="result-example" id="detail-example"></div>
+            </div>
+            <button class="btn" id="btn-detail" onclick="drawDetail()" disabled>抽取對應細項</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 依據結構完整分類的資料庫
+    const dataStructure = {
+        "一、 內心情感與心境（情緒篇）": [
+            { name: "「悲傷、哀慟與沮喪」類", detail: "面對失去、悲劇或莫名的情緒低落。", example: "例：詩篇 42 篇「我的心哪，你為何憂悶？」" },
+            { name: "「焦慮、擔憂與恐懼」類", detail: "對未來未知感到不安、面臨巨大壓力。", example: "例：馬太福音 6 章「不要為明天憂慮」" },
+            { name: "「孤獨、被遺棄與無助」類", detail: "覺得沒有人理解自己、身處孤立無援的境地。", example: "" },
+            { name: "「憤怒、不平與埋怨」類", detail: "面對不公義、心中充滿怒火或對環境感到憤恨。", example: "" },
+            { name: "「愧疚、認罪與羞恥」類", detail: "為自己的過錯感到自責，需要尋求原諒與良心的平安。", example: "例：詩篇 51 篇大衛的懺悔" },
+            { name: "「感恩、喜樂與讚美」類", detail: "心中充滿謝意、經歷順境或歡慶時刻。", example: "例：詩篇 100 篇稱謝詩" }
+        ],
+        "二、 生活困境與風浪（處境篇）": [
+            { name: "「苦難、疾病與身體軟弱」類", detail: "身體遭受病痛折磨，或生命經歷長期、無法解釋的苦難。", example: "例：約伯記" },
+            { name: "「財務危機與物質缺乏」類", detail: "面臨經濟壓力、失業、缺乏生活必需品。", example: "" },
+            { name: "「面臨抉擇與尋求智慧（迷茫）」類", detail: "人生走到十字路口，不知道該如何做決定。", example: "" },
+            { name: "「疲憊、枯乾與尋求安息」類", detail: "身心俱疲、工作倦怠，需要重新得力。", example: "" },
+            { name: "「遭受逼迫、不公對待與冤枉」類", detail: "在職場或生活中被惡意攻擊、誤解或排擠。", example: "" }
+        ],
+        "三、 人際與社會關係（關係篇）": [
+            { name: "「愛、饒恕與仇敵」類", detail: "如何去愛難以愛的人、學習放下恨意與原諒傷害。", example: "" },
+            { name: "「家庭、婚姻與育兒」類", detail: "夫妻相處、孝敬父母、教養孩童的處境。", example: "" },
+            { name: "「友誼與同儕關係」類", detail: "尋找真誠的朋友、處理朋友間的衝突與背叛。", example: "" },
+            { name: "「領導、工作與職場倫理」類", detail: "身為管理者、領導者或部屬，如何在工作中展現智慧與誠信。", example: "" }
+        ],
+        "四、 信仰生命增長（生命篇）": [
+            { name: "「信心與盼望」類", detail: "當信仰動搖、遭遇懷疑，需要重新建立對神的信任。", example: "" },
+            { name: "「誘惑與試探」類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
+            { name: "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
+            { name: "「生命的呼召與使命」類", detail: "尋找人生的意義、活出受造的價值。", example: "" },
+            { name: "「謙卑與捨己」類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
+        ]
+    };
+
+    // 取得所有大主題名稱陣列
+    const themes = Object.keys(dataStructure);
+    let selectedTheme = ""; // 紀錄目前抽到的大主題
+
+    // 階段一：抽大主題
+    function drawTheme() {
+        const themeBox = document.getElementById('theme-box');
+        const themeResult = document.getElementById('theme-result');
+        const detailBox = document.getElementById('detail-box');
+        const detailResult = document.getElementById('detail-result');
+        const detailSub = document.getElementById('detail-sub');
+        const detailExample = document.getElementById('detail-example');
+        const btnDetail = document.getElementById('btn-detail');
+
+        // 初始化/重置第二步狀態
+        detailBox.classList.add('locked');
+        btnDetail.disabled = true;
+        detailResult.innerText = "等待大主題決定...";
+        detailSub.innerText = "";
+        detailExample.innerText = "";
+
+        themeBox.classList.add('active');
+
+        let count = 0;
+        const interval = setInterval(() => {
+            const tempIndex = Math.floor(Math.random() * themes.length);
+            themeResult.innerText = themes[tempIndex];
+            count++;
+
+            if (count > 8) {
+                clearInterval(interval);
+                // 決定最終大主題
+                const finalIndex = Math.floor(Math.random() * themes.length);
+                selectedTheme = themes[finalIndex];
+                themeResult.innerText = selectedTheme;
+                themeBox.classList.remove('active');
+
+                // 解鎖第二階段
+                detailBox.classList.remove('locked');
+                detailResult.innerText = "請點擊按鈕抽取細項";
+                btnDetail.disabled = false;
+            }
+        }, 80);
+    }
+
+    // 階段二：抽對應細項
+    function drawDetail() {
+        if (!selectedTheme) return;
+
+        const detailBox = document.getElementById('detail-box');
+        const detailResult = document.getElementById('detail-result');
+        const detailSub = document.getElementById('detail-sub');
+        const detailExample = document.getElementById('detail-example');
+        
+        // 取得該大主題底下的所有細項陣列
+        const subList = dataStructure[selectedTheme];
+        
+        detailBox.classList.add('active');
+
+        let count = 0;
+        const interval = setInterval(() => {
+            const tempIndex = Math.floor(Math.random() * subList.length);
+            detailResult.innerText = subList[tempIndex].name;
+            detailSub.innerText = subList[tempIndex].detail;
+            count++;
+
+            if (count > 10) {
+                clearInterval(interval);
+                // 決定最終細項
+                const finalIndex = Math.floor(Math.random() * subList.length);
+                const finalChoice = subList[finalIndex];
+
+                detailResult.innerText = finalChoice.name;
+                detailSub.innerText = finalChoice.detail;
+
+                if (finalChoice.example) {
+                    detailExample.innerText = finalChoice.example;
+                } else {
+                    detailExample.innerText = "";
+                }
+
+                detailBox.classList.remove('active');
+            }
+        }, 60);
+    }
+</script>
+
+</body>
+</html>
