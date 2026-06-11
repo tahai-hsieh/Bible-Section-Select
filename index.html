@@ -26,9 +26,9 @@
         .container {
             max-width: 850px;
             width: 100%;
-            max-height: 98vh; /* 稍微微調高度容納測試框 */
+            max-height: 95vh; /* 移除上方輸入框，回復舒適的最高高度 */
             background-color: #ffffff;
-            padding: 20px 25px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             text-align: center;
@@ -38,34 +38,6 @@
             justify-content: center;
         }
         
-        /* 測試輸入框區域 */
-        .test-admin-box {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        .test-input {
-            padding: 4px 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            font-size: 12px;
-            width: 80px;
-            text-align: center;
-        }
-        .test-confirm-btn {
-            padding: 4px 12px;
-            background-color: #4a5568;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .test-confirm-btn:hover {
-            background-color: #2d3748;
-        }
-
         h1 {
             color: #2c3e50;
             margin-top: 0;
@@ -76,7 +48,7 @@
         p.subtitle {
             color: #7f8c8d;
             margin-top: 5px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-size: 13px;
         }
         /* 雙區塊排版 */
@@ -181,27 +153,20 @@
             font-size: 18px;
         }
 
-        /* 測試功能主按鈕 */
+        /* 隨時可點按的綠色測試控制鈕 */
         .btn-test-control {
             margin-top: 10px;
-            background-color: #cbd5e0; /* 預設變暗、灰色 */
-            color: #718096;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-        .btn-test-control.unlocked-green {
             background-color: #2ecc71;
             color: white;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
         }
-        .btn-test-control.unlocked-green:hover {
+        .btn-test-control:hover {
             background-color: #27ae60;
         }
         .btn-test-control.testing-red {
             background-color: #e74c3c;
             color: white;
-            cursor: pointer;
             box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2);
         }
         .btn-test-control.testing-red:hover {
@@ -235,7 +200,6 @@
 
         /* 針對小螢幕進行微調，確保絕對不溢出 */
         @media (max-width: 600px) {
-            .test-admin-box { margin-bottom: 5px; }
             .zones-container {
                 flex-direction: column; /* 手機版改垂直，但縮小間距防止溢出 */
                 gap: 8px;
@@ -261,11 +225,6 @@
 <body>
 
 <div class="container">
-    <div class="test-admin-box">
-        <input type="password" id="test-code-input" class="test-input" placeholder="系統密碼">
-        <button class="test-confirm-btn" onclick="verifyTestCode()">確認</button>
-    </div>
-
     <h1>周謙和 Ｘ 謝佳杰<br>每週聖經分享抽籤系統</h1>
     <p class="subtitle" id="system-subtitle">請依序操作：點擊按鈕開始滾動，再次點擊按鈕停止並鎖定結果</p>
     
@@ -294,7 +253,7 @@
         <span id="summary-detail">（尚未抽出細項）</span>
     </div>
 
-    <button class="btn btn-test-control" id="btn-test-mode" onclick="toggleTestDrawingMode()" disabled>開始測試</button>
+    <button class="btn btn-test-control" id="btn-test-mode" onclick="handleTestModeClick()">開始測試</button>
 </div>
 
 <script>
@@ -323,7 +282,7 @@
         "四、 信仰生命增長（生命篇）": [
             { name: "「信心與盼望」類", detail: "當信仰動搖、遭遇懷疑，需要重新建立對神的信任。", example: "" },
             { name: "「誘惑與試探」類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
-            { name: " "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
+            { name: "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
             { name: "「生命的呼召與使命」類", detail: "尋找人生的意義、活出受造的價值。", example: "" },
             { name: "「謙卑與捨己」類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
         ]
@@ -339,8 +298,7 @@
     let currentDetailIndex = 0;
     
     let isSystemLocked = false; 
-    let isTestModeUnlocked = false; // 是否輸入 0126 解鎖按鈕
-    let isCurrentlyTesting = false; // 是否按下開始測試進入無限抽
+    let isCurrentlyTesting = false; // 是否正處於無限抽測試狀態
 
     window.onload = function() {
         initDates();
@@ -395,10 +353,10 @@
             }
         }
         
-        // 恢復正常狀態
+        // 恢復正常未鎖定狀態
         isSystemLocked = false;
         document.getElementById('btn-theme').disabled = false;
-        document.getElementById('btn-detail').disabled = true; // 預備狀態下細項預設停用，除非抽了大主題
+        document.getElementById('btn-detail').disabled = true; 
         document.getElementById('detail-box').classList.add('locked');
         
         const subtitle = document.getElementById('system-subtitle');
@@ -416,37 +374,8 @@
         subtitle.classList.add('lock-notice');
     }
 
-    /* ================= 統一密碼切換與無限抽測試機制 ================= */
-    function verifyTestCode() {
-        const inputVal = document.getElementById('test-code-input').value.trim();
-        const testBtn = document.getElementById('btn-test-mode');
-
-        if (inputVal === "0126") {
-            if (!isTestModeUnlocked) {
-                // 【密碼正確：解鎖按鈕（變綠）】
-                isTestModeUnlocked = true;
-                testBtn.disabled = false;
-                testBtn.innerText = "開始測試";
-                testBtn.className = "btn btn-test-control unlocked-green";
-            } else {
-                // 【再次輸入密碼：完全鎖定測試（還原灰色變暗）】
-                isTestModeUnlocked = false;
-                isCurrentlyTesting = false;
-                
-                testBtn.disabled = true;
-                testBtn.innerText = "開始測試";
-                testBtn.className = "btn btn-test-control"; 
-                
-                // 回歸常規每週一次的時間鎖定檢查
-                checkLockStatus();
-            }
-        }
-        document.getElementById('test-code-input').value = ""; // 清空
-    }
-
-    function toggleTestDrawingMode() {
-        if (!isTestModeUnlocked) return;
-
+    /* ================= 彈出式密碼無限抽測試機制 ================= */
+    function handleTestModeClick() {
         const testBtn = document.getElementById('btn-test-mode');
         const subtitle = document.getElementById('system-subtitle');
         const btnTheme = document.getElementById('btn-theme');
@@ -454,31 +383,36 @@
         const detailBox = document.getElementById('detail-box');
 
         if (!isCurrentlyTesting) {
-            // 【點下開始測試：按鈕變紅「停止測試」，開啟無限案權限】
-            isCurrentlyTesting = true;
+            // 【點擊開始測試：跳出密碼詢問】
+            const password = prompt("請輸入系統密碼以執行無限次測試：");
             
-            testBtn.innerText = "停止測試";
-            testBtn.className = "btn btn-test-control testing-red";
-            
-            // 測試模式下強制解鎖這兩個抽籤按鈕，使其可自由無限按
-            isSystemLocked = false; 
-            btnTheme.disabled = false;
-            btnDetail.disabled = false;
-            detailBox.classList.remove('locked');
-            if (detailResult.innerText === "請先完成第一步") {
-                detailResult.innerText = "請點擊下方按鈕";
-            }
+            if (password === "0126") {
+                isCurrentlyTesting = true;
+                
+                testBtn.innerText = "停止測試";
+                testBtn.className = "btn btn-test-control testing-red";
+                
+                // 強制解鎖所有抽籤控制權限
+                isSystemLocked = false; 
+                btnTheme.disabled = false;
+                btnDetail.disabled = false;
+                detailBox.classList.remove('locked');
+                if (document.getElementById('detail-result').innerText === "請先完成第一步") {
+                    document.getElementById('detail-result').innerText = "請點擊下方按鈕";
+                }
 
-            subtitle.innerText = "【測試模式運行中】已解除每週時間限制，兩步驟抽籤按鈕皆可无限點選測試。";
-            subtitle.classList.remove('lock-notice');
+                subtitle.innerText = "【測試模式運行中】已解除每週時間限制，兩步驟抽籤按鈕皆可無限點選測試。";
+                subtitle.classList.remove('lock-notice');
+            } else if (password !== null) {
+                alert("密碼錯誤，無法啟動測試模式！");
+            }
         } else {
-            // 【點下停止測試：按鈕變回綠色「開始測試」】
+            // 【點擊停止測試：直接返回常規模式】
             isCurrentlyTesting = false;
             
             testBtn.innerText = "開始測試";
-            testBtn.className = "btn btn-test-control unlocked-green";
+            testBtn.className = "btn btn-test-control"; // 自動彈回預設綠色樣式
             
-            // 回歸正式系統的週期鎖定判定
             checkLockStatus();
         }
     }
@@ -498,7 +432,6 @@
         const btnDetail = document.getElementById('btn-detail');
 
         if (themeInterval === null) {
-            // 開始滾動大主題
             if (!isCurrentlyTesting) {
                 detailBox.classList.add('locked');
                 btnDetail.disabled = true;
@@ -517,7 +450,6 @@
                 themeResult.innerText = themes[currentThemeIndex];
             }, 50);
         } else {
-            // 停止大主題
             clearInterval(themeInterval);
             themeInterval = null;
 
@@ -528,7 +460,6 @@
             btnTheme.innerText = "重新抽取大主題";
             btnTheme.classList.remove('rolling');
 
-            // 解鎖第二步
             detailBox.classList.remove('locked');
             if (detailResult.innerText === "請先完成第一步" || detailResult.innerText === "等待大主題決定...") {
                 detailResult.innerText = "請點擊下方按鈕";
@@ -538,11 +469,9 @@
     }
 
     function toggleDetail() {
-        // 如果還沒有選定大主題，且非測試模式，則不執行
         if (!selectedTheme && !isCurrentlyTesting) return;
         if (isSystemLocked && !isCurrentlyTesting) return;
 
-        // 測試模式下的安全防呆：若還沒抽過大主題就硬按，自動隨機給一個大主題對應
         if (!selectedTheme && isCurrentlyTesting) {
             selectedTheme = themes[Math.floor(Math.random() * themes.length)];
             document.getElementById('theme-result').innerText = selectedTheme;
@@ -557,7 +486,6 @@
         const subList = dataStructure[selectedTheme];
 
         if (detailInterval === null) {
-            // 開始滾動細項
             detailBox.classList.add('active');
             btnDetail.innerText = "停止並決定細項";
             btnDetail.classList.add('rolling');
@@ -577,7 +505,6 @@
                 }
             }, 50);
         } else {
-            // 停止細項
             clearInterval(detailInterval);
             detailInterval = null;
 
@@ -585,7 +512,7 @@
             detailResult.innerText = finalChoice.name;
             detailSub.innerText = finalChoice.detail;
             if (finalChoice.example) {
-                detailExample.innerText = finalChoice.example;
+                finalChoice.example = finalChoice.example;
             } else {
                 detailExample.innerText = "";
             }
@@ -598,10 +525,8 @@
             btnDetail.classList.remove('rolling');
 
             if (isCurrentlyTesting) {
-                // 【測試模式下】：允許兩邊按鈕都無限按，大主題按鈕不予鎖死
                 document.getElementById('btn-theme').disabled = false;
             } else {
-                // 【正式運行下】：寫入 localStorage 鎖死本週權限
                 const now = new Date();
                 localStorage.setItem('last_bible_draw_time', now.getTime().toString());
                 localStorage.setItem('last_bible_draw_summary', summaryText);
