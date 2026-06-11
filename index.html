@@ -128,12 +128,19 @@
             color: #2c3e50;
             line-height: 1.4;
         }
+        
+        /* 【修改：方框處】細項描述區域優化自動換行與排版 */
         .result-detail {
             font-size: 13px;
             color: #4a5568;
-            margin-top: 6px;
-            line-height: 1.3;
+            margin-top: 8px;
+            line-height: 1.4;
+            word-break: break-all;      /* 確保英數字或特殊符號也能正確換行 */
+            white-space: normal;        /* 開啟標準自動換行 */
+            display: block;             /* 確保占滿區塊進行換行 */
+            padding: 0 5px;
         }
+        
         .result-example {
             font-size: 12px;
             color: #e67e22;
@@ -296,9 +303,9 @@
         "一、 內心情感與心境（情緒篇）": [
             { name: "「悲傷、哀慟與沮喪」類", detail: "面對失去、悲劇或莫名的情緒低落。", example: "例：詩篇 42 篇「我的心哪，你為何憂悶？」" },
             { name: "「焦慮、擔憂與恐懼」類", detail: "對未來未知感到不安、面臨巨大壓力。", example: "例：馬太福音 6 章「不要為明天憂慮」" },
-            { name: "「孤獨、被遺棄與無助\"類", detail: "覺得沒有人理解自己、身處孤立無援的境地。", example: "" },
+            { name: "「孤獨、被遺棄與無助」類", detail: "覺得沒有人理解自己、身處孤立無援的境地。", example: "" },
             { name: "「憤怒、不平與埋怨」類", detail: "面對不公義、心中充滿怒火或對環境感到憤恨。", example: "" },
-            { name: "「愧疚、認罪與羞恥\"類", detail: "為自己的過錯感到自責，需要尋求原諒與良心的平安。", example: "例：詩篇 51 篇大衛的懺悔" },
+            { name: "「愧疚、認罪與羞恥」類", detail: "為自己的過錯感到自責，需要尋求原諒與良心的平安。", example: "例：詩篇 51 篇大衛的懺悔" },
             { name: "「感恩、喜樂與讚美」類", detail: "心中充滿謝意、經歷順境或歡慶時刻。", example: "例：詩篇 100 篇稱謝詩" }
         ],
         "二、 生活困境與風浪（處境篇）": [
@@ -312,14 +319,14 @@
             { name: "「愛、饒恕與仇敵」類", detail: "如何去愛難以愛的人、學習放下恨意與原諒傷害。", example: "" },
             { name: "「家庭、婚姻與育兒」類", detail: "夫妻相處、孝敬父母、教養孩童的處境。", example: "" },
             { name: "「友誼與同儕關係」類", detail: "尋找真誠的朋友、處理朋友間的衝突與背叛。", example: "" },
-            { name: "「領導、工作與職場倫理\"類", detail: "身為管理者、領導者或部屬，如何在工作中展現智慧與誠信。", example: "" }
+            { name: "「領導、工作與職場倫理」類", detail: "身為管理者、領導者或部屬，如何在工作中展現智慧與誠信。", example: "" }
         ],
         "四、 信仰生命增長（生命篇）": [
             { name: "「信心與盼望」類", detail: "當信仰動搖、遭遇懷疑，需要重新建立對神的信任。", example: "" },
             { name: "「誘惑與試探」類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
             { name: "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
             { name: "「生命的呼召與使命」類", detail: "尋找人生的意義、活出受造的價值。", example: "" },
-            { name: "「謙卑與捨己\"類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
+            { name: "「謙卑與捨己」類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
         ]
     };
 
@@ -388,7 +395,6 @@
             }
         }
         
-        // 恢復未鎖定狀態
         isSystemLocked = false;
         document.getElementById('btn-theme').disabled = false;
         document.getElementById('btn-detail').disabled = true; 
@@ -409,39 +415,32 @@
         subtitle.classList.add('lock-notice');
     }
 
-    /* ================= 右上角清除重置與解鎖機制 ================= */
     function handleClearAndReset() {
         const password = prompt("請輸入系統密碼以執行強制清除重置：");
         
         if (password === "0126") {
-            // 1. 清空儲存區
             localStorage.removeItem('last_bible_draw_time');
             localStorage.removeItem('last_bible_draw_summary');
             
-            // 2. 還原全域測試與鎖定狀態
             isCurrentlyTesting = false;
             selectedTheme = "";
             
-            // 3. 重置測試按鈕樣式
             const testBtn = document.getElementById('btn-test-mode');
             testBtn.innerText = "開始測試";
             testBtn.className = "btn btn-test-control";
             
-            // 4. 還原所有 UI 文字
             document.getElementById('theme-result').innerText = "請點擊下方按鈕";
             document.getElementById('detail-result').innerText = "請先完成第一步";
             document.getElementById('detail-sub').innerText = "";
             document.getElementById('detail-example').innerText = "";
             document.getElementById('summary-detail').innerText = "（尚未抽出細項）";
             
-            // 5. 重新運行常規比對，完美回到乾淨的未抽籤狀態
             checkLockStatus();
             alert("系統紀錄已成功清除，功能已重新解鎖！");
         } else if (password !== null) {
             alert("密碼錯誤，無法執行重置！");
         }
     }
-    /* ============================================================ */
 
     function handleTestModeClick() {
         const testBtn = document.getElementById('btn-test-mode');
@@ -579,7 +578,8 @@
                 detailExample.innerText = "";
             }
 
-            const summaryText = `${finalChoice.name} — ${finalChoice.detail}`;
+            /* 【修改：圓圈處】將原本的破折號串接，統一調整為「冒號（：）」作區隔 */
+            const summaryText = `${finalChoice.name}：${finalChoice.detail}`;
             document.getElementById('summary-detail').innerText = summaryText;
 
             detailBox.classList.remove('active');
