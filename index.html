@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>周謙和 Ｘ 謝佳杰 | 每週聖經分享抽籤系統</title>
     <style>
-        /* 鎖定全螢幕，禁止捲動 */
+        /* 【修改部分】鎖定全螢幕，禁止捲動，並加入指定的聖經背景圖（含淡化遮罩） */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100vh;
             overflow: hidden; /* 徹底隱藏網頁捲軸 */
-            background-color: #f4f6f9;
+            /* 覆蓋一層 85% 透明度的白光，並完美置中縮放背景圖（較建議此版本） */
+            background: linear-gradient(rgba(244, 246, 249, 0.85), rgba(244, 246, 249, 0.85)), 
+                        url('https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg') no-repeat center center fixed;
+            background-size: cover;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
         /* 完美置中容器 */
@@ -136,7 +139,7 @@
             margin-top: 8px;
             line-height: 1.4;
             word-break: break-all;      /* 確保英數字或特殊符號也能正確換行 */
-            white-space: pre-wrap;      /* 支援引號換行 \n 的保留與自動換行（較建議此版本） */
+            white-space: pre-wrap;      /* 支援引號換行 \n 的保留與自動換行 */
             display: block;             /* 確保占滿區塊進行換行 */
             padding: 0 5px;
         }
@@ -260,7 +263,6 @@
 </head>
 <body>
 
-<!-- 右上角清除重置按鈕 -->
 <button class="btn-clear-reset" onclick="handleClearAndReset()">清除選擇</button>
 
 <div class="container">
@@ -268,7 +270,6 @@
     <p class="subtitle" id="system-subtitle">請依序操作：點擊按鈕開始滾動，再次點擊按鈕停止並鎖定結果</p>
     
     <div class="zones-container">
-        <!-- 第一階段：大主題 -->
         <div class="zone">
             <div class="zone-title">第一步：抽取大主題</div>
             <div class="draw-box" id="theme-box">
@@ -277,7 +278,6 @@
             <button class="btn" id="btn-theme" onclick="toggleTheme()">開始抽取大主題</button>
         </div>
         
-        <!-- 第二階段：細項 -->
         <div class="zone">
             <div class="zone-title">第二步：抽取細項</div>
             <div class="draw-box locked" id="detail-box">
@@ -289,18 +289,15 @@
         </div>
     </div>
 
-    <!-- 底部動態分享主題 -->
     <div class="summary-box">
         本週（<span id="date-start">----/--/--</span> ～ <span id="date-end">----/--/--</span>）查經分享主題為：<br>
         <span id="summary-detail">（尚未抽出細項）</span>
     </div>
 
-    <!-- 隨時可點擊的測試按鈕 -->
     <button class="btn btn-test-control" id="btn-test-mode" onclick="handleTestModeClick()">開始測試</button>
 </div>
 
 <script>
-    /* 【修改：照指定內容換行】在需要斷行的地方精確補上 \n 換行符號 */
     const dataStructure = {
         "一、 內心情感與心境（情緒篇）": [
             { name: "「悲傷、哀慟與沮喪」類", detail: "面對失去、悲劇或莫名的情緒低落。\n（例：詩篇 42 篇「我的心哪，你為何憂悶？」）", example: "" },
@@ -361,7 +358,6 @@
         document.getElementById('date-end').innerText = formatDate(endDate);
     }
 
-    // 獲取當前時間所屬週期的「基準分水嶺週三 17:50」
     function getCutoffWednesday550(date) {
         const d = new Date(date.getTime());
         const day = d.getDay();
