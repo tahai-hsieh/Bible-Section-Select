@@ -51,12 +51,12 @@
             color: #2d3748;
         }
 
-        /* 【修改：拉低白底透明度】將純白改成 80% 透明度的微透光白 */
+        /* 【修改：再次拉低白底透明度】從 0.8 調降至 0.55，讓背景更顯眼（較建議此版本） */
         .container {
             max-width: 850px;
             width: 100%;
             max-height: 95vh; /* 限制最高不超過螢幕高度，防止內容擠壓變形 */
-            background-color: rgba(255, 255, 255, 0.8); /* 較建議此版本 */
+            background-color: rgba(255, 255, 255, 0.55); 
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
@@ -88,10 +88,10 @@
             flex-wrap: nowrap; /* 強制不換行，避免在小螢幕撐開導致需要捲動 */
         }
         
-        /* 【修改：拉低白底透明度】同步將兩個小卡片的底色改為 80% 透明度透出背景 */
+        /* 【修改：再次拉低白底透明度】同步將兩個小卡片底色降至 0.55 */
         .zone {
             flex: 1;
-            background-color: rgba(255, 255, 255, 0.8); /* 較建議此版本 */
+            background-color: rgba(255, 255, 255, 0.55); 
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             padding: 15px;
@@ -214,7 +214,7 @@
 
         /* 底部總結輸出區塊 */
         .summary-box {
-            background-color: rgba(252, 248, 227, 0.85); /* 同步拉低底部的黃色總結看板透明度 */
+            background-color: rgba(252, 248, 227, 0.65); /* 同步調降底部總結看板的黃色底色透明度 */
             border: 1px solid #fbeed5;
             border-radius: 8px;
             padding: 12px 15px;
@@ -322,17 +322,17 @@
             { name: "「遭受逼迫、不公對待與冤枉」類", detail: "在職場或生活中被惡意攻擊、誤解或排擠。", example: "" }
         ],
         "三、 人際與社會關係（關係篇）": [
-            { name: "「愛、饒恕與仇敵\"類", detail: "如何去愛難以愛的人、學習放下恨意與原諒傷害。", example: "" },
+            { name: "「愛、饒恕與仇敵」類", detail: "如何去愛難以愛的人、學習放下恨意與原諒傷害。", example: "" },
             { name: "「家庭、婚姻與育兒」類", detail: "夫妻相處、孝敬父母、教養孩童的處境。", example: "" },
-            { name: "「友誼與同儕關係」類", detail: "尋找真誠的朋友、處理朋友間的衝突與背叛。", example: "" },
+            { name: "「友誼與同儕關係\"類", detail: "尋找真誠的朋友、處理朋友間的衝突與背叛。", example: "" },
             { name: "「領導、工作與職場倫理」類", detail: "身為管理者、領導者或部屬，\n如何在工作中展現智慧與誠信。", example: "" }
         ],
         "四、 信仰生命增長（生命篇）": [
             { name: "「信心與盼望」類", detail: "當信仰動搖、遭遇懷疑，需要重新建立對神的信任。", example: "" },
-            { name: "「誘惑與試探」類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
+            { name: "「誘惑與試探\"類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
             { name: "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
-            { name: "「生命的呼召與使命\"類", detail: "尋找人生的意義、活出受造的價值。", example: "" },
-            { name: "「謙卑與捨己」類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
+            { name: "「生命的呼召與使命」類", detail: "尋找人生的意義、活出受造的價值。", example: "" },
+            { name: "「謙卑與捨己\"類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
         ]
     };
 
