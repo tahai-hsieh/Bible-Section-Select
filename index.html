@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>周謙和 Ｘ 謝佳杰 | 每週聖經分享抽籤系統</title>
     
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><mask id='circle'><circle cx='50' cy='50' r='50' fill='white'/></mask><g mask='url(%23circle)'><image href='https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg' x='-62' y='-20' width='230' height='150'/></g></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cmask id='circle'%3E%3Ccircle cx='50' cy='50' r='50' fill='white'/%3E%3C/mask%3E%3Cg mask='url(%23circle)'%3E%3Cimage href='https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg' x='-62' y='-20' width='230' height='150'/%3E%3C/g%3E%3C/svg%3E?v=20260612">
     
     <style>
-        /* 鎖定全螢幕，禁止捲動，並加入指定的聖經背景圖（含淡化遮罩） */
+        /* 鎖定全螢幕，禁止捲動，並加入指定的聖經背景圖 */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100vh;
             overflow: hidden; /* 徹底隱藏網頁捲軸 */
-            /* 覆蓋一層 85% 透明度的白光，並完美置中縮放背景圖 */
-            background: linear-gradient(rgba(244, 246, 249, 0.85), rgba(244, 246, 249, 0.85)), 
-                        url('https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg') no-repeat center center fixed;
+            background: url('https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
@@ -51,7 +49,7 @@
             color: #2d3748;
         }
 
-        /* 【修改：再次拉低白底透明度】從 0.8 調降至 0.55，讓背景更顯眼（較建議此版本） */
+        /* 白框透明：保持 55% 的半透明磨砂白，優雅透出後方原圖 */
         .container {
             max-width: 850px;
             width: 100%;
@@ -88,7 +86,7 @@
             flex-wrap: nowrap; /* 強制不換行，避免在小螢幕撐開導致需要捲動 */
         }
         
-        /* 【修改：再次拉低白底透明度】同步將兩個小卡片底色降至 0.55 */
+        /* 白框透明：同步讓兩個步驟區塊卡片保持 55% 的半透明底色 */
         .zone {
             flex: 1;
             background-color: rgba(255, 255, 255, 0.55); 
@@ -324,15 +322,15 @@
         "三、 人際與社會關係（關係篇）": [
             { name: "「愛、饒恕與仇敵」類", detail: "如何去愛難以愛的人、學習放下恨意與原諒傷害。", example: "" },
             { name: "「家庭、婚姻與育兒」類", detail: "夫妻相處、孝敬父母、教養孩童的處境。", example: "" },
-            { name: "「友誼與同儕關係\"類", detail: "尋找真誠的朋友、處理朋友間的衝突與背叛。", example: "" },
+            { name: "「友誼與同儕關係」類", detail: "尋找真誠的朋友、處理朋友間的衝突與背叛。", example: "" },
             { name: "「領導、工作與職場倫理」類", detail: "身為管理者、領導者或部屬，\n如何在工作中展現智慧與誠信。", example: "" }
         ],
         "四、 信仰生命增長（生命篇）": [
             { name: "「信心與盼望」類", detail: "當信仰動搖、遭遇懷疑，需要重新建立對神的信任。", example: "" },
-            { name: "「誘惑與試探\"類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
+            { name: "「誘惑與試探」類", detail: "面對自私、貪婪、情慾等各種拉扯與道德考驗。", example: "" },
             { name: "「等候與忍耐」類", detail: "祈禱似乎沒有回應、事情毫無進展，需要學習耐心等待。", example: "" },
             { name: "「生命的呼召與使命」類", detail: "尋找人生的意義、活出受造的價值。", example: "" },
-            { name: "「謙卑與捨己\"類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
+            { name: "「謙卑與捨己」類", detail: "放下自我中心的驕傲，學習服事他人。", example: "" }
         ]
     };
 
@@ -566,9 +564,9 @@
                 detailResult.innerText = subList[currentDetailIndex].name;
                 detailSub.innerText = subList[currentDetailIndex].detail;
                 if (subList[currentDetailIndex].example) {
-                    detailExample.innerText = subList[currentDetailIndex].example;
+                    document.getElementById('detail-example').innerText = subList[currentDetailIndex].example;
                 } else {
-                    detailExample.innerText = "";
+                    document.getElementById('detail-example').innerText = "";
                 }
             }, 50);
         } else {
