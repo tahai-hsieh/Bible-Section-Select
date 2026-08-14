@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>周謙和 Ｘ 謝佳杰 | 每週聖經分享抽籤系統</title>
     
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cmask id='circle'%3E%3Ccircle cx='50' cy='50' r='50' fill='white'/%3E%3C/mask%3E%3Cg mask='url(%23circle)'%3E%3Cimage href='https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg' x='-62' y='-20' width='230' height='150'/%3E%3C/g%3E%3C/svg%3E?v=20260612">
+    <!-- 1. 網頁圖標：利用 SVG 圓形遮罩裁切 icon_bible.png 呈現圓形 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cmask id='circle'%3E%3Ccircle cx='50' cy='50' r='50' fill='white'/%3E%3C/mask%3E%3Cg mask='url(%23circle)'%3E%3Cimage href='icon_bible.png' x='0' y='0' width='100' height='100' preserveAspectRatio='xMidYMid slice'/%3E%3C/g%3E%3C/svg%3E">
+    <link rel="alternate icon" href="icon_bible.png">
+
+    <!-- 2. 加入主畫面圖標：保持原圖樣貌 -->
+    <link rel="apple-touch-icon" href="icon_bible.png">
     
+    <!-- Web App Manifest 設定（支援應用程式安裝與離線運作） -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%E6%AF%8F%E9%80%B1%E8%81%96%E7%B6%93%E5%88%86%E4%BA%AB%E6%8A%BD%E7%B1%A4%E7%B3%BB%E7%B5%B1%22%2C%22short_name%22%3A%22%E8%81%96%E7%B6%93%E6%8A%BD%E7%B1%A4%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233498db%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22icon_bible.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+
     <style>
+        /* 禁止全域縮放、雙擊放大與文字選取 */
+        * {
+            touch-action: manipulation; /* 禁用雙擊放大 (Double-tap to zoom) */
+            -webkit-tap-highlight-color: transparent;
+        }
+
         /* 鎖定全螢幕，禁止捲動，並加入指定的聖經背景圖 */
         html, body {
             margin: 0;
@@ -18,6 +32,8 @@
             background: url('https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            user-select: none; /* 防止誤觸拖曳與選取 */
+            -webkit-user-select: none;
         }
         /* 完美置中容器 */
         body {
@@ -349,7 +365,45 @@
     window.onload = function() {
         initDates();
         checkLockStatus();
+        registerServiceWorker();
     };
+
+    /* 防止 iOS 按兩下畫面縮放的事件監聽 */
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+
+    /* 註冊 Service Worker 實現無網路離線快取 */
+    function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'bible-draw-v1';
+                const urlsToCache = [
+                    './',
+                    'icon_bible.png',
+                    'https://everystudent.com.tw/wp-content/uploads/2015/12/Bible1.jpg'
+                ];
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request).then(response => response || fetch(event.request))
+                    );
+                });
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const workerUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(workerUrl).catch(() => {});
+        }
+    }
 
     function initDates() {
         const now = new Date();
